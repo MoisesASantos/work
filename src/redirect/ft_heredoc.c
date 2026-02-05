@@ -28,10 +28,8 @@ static void	ft_heredoc_child(t_shell *shell, char *limeter, int pipefd[2])
 	char	*line;
 	char	*tmp;
 
-	close(pipefd[0]);
-	ft_heredoc_signals(0);
-	if (!limeter)
-		exit(EXIT_FAILURE);
+	(close(pipefd[0]), ft_heredoc_signals(0));
+	tmp = NULL;
 	while (1)
 	{
 		line = readline("> ");
@@ -42,10 +40,12 @@ static void	ft_heredoc_child(t_shell *shell, char *limeter, int pipefd[2])
 			free(line);
 			break ;
 		}
-		tmp = line;
-		line = expand_str(shell, line);
-		write(pipefd[1], line, ft_strlen(line));
-		write(pipefd[1], "\n", 1);
+		if (shell->cmd->redirects->quote_flag == 0)
+		{
+			tmp = line;
+			line = expand_str(shell, line);
+		}
+		ft_putendl_fd(line, pipefd[1]);
 		(free(line), free(tmp));
 	}
 	(close(pipefd[1]), exit(EXIT_SUCCESS));

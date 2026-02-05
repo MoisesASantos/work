@@ -60,7 +60,7 @@ static int	ft_store_redirect(t_cmd *cmd_node, char **tokens, int *index)
 	if (!tokens[*index + 1])
 		return (free(redir), (*index)++, 0);
 	if (redir->type == REDIR_HEREDOC)
-		redir->limeter = ft_remove_quotes(tokens[*index + 1]);
+		redir->limeter = ft_quote_limeter(redir, tokens[*index + 1]);
 	else
 		redir->file_name = ft_remove_quotes(tokens[*index + 1]);
 	redir->heredoc_fd = -1;

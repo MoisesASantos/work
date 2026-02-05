@@ -6,7 +6,7 @@
 /*   By: mosantos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 11:54:18 by mosantos          #+#    #+#             */
-/*   Updated: 2025/11/28 14:18:34 by mosantos         ###   ########.fr       */
+/*   Updated: 2026/02/04 14:41:25 by mosantos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void						ft_create_cmd(t_cmd **cmd);
 void						ft_lstadd_cmd(t_cmd **lst, t_cmd *novo);
 void						ft_lstadd_redir(t_redirect **lst, t_redirect *novo);
 char						*ft_remove_quotes(char *str);
+char						*ft_quote_limeter(t_redirect *redir, char *line);
 int							is_pipe_token(char *token);
 int							ft_skip_quote(char *str, int i);
 int							ft_read_command(t_shell *shell);

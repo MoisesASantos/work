@@ -63,7 +63,7 @@ HEADER	=	$(SRC_DIR)/include/ft_cleanup.h \
 			$(SRC_DIR)/include/structs.h
 
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror -g
+CFLAGS	= -Wall -Wextra -Werror
 RM		= rm -rf
 
 all: $(NAME)

@@ -34,6 +34,7 @@ typedef struct s_redirect
 	char				*limeter;
 	struct s_redirect	*next;
 	t_redirect_type		type;
+	int					quote_flag;
 	int					heredoc_fd;
 }						t_redirect;
 

@@ -6,7 +6,7 @@
 /*   By: mosantos <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:39:01 by mosantos          #+#    #+#             */
-/*   Updated: 2025/11/28 12:29:50 by mosantos         ###   ########.fr       */
+/*   Updated: 2026/01/30 08:46:16 by sgaspar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static int	ft_process_input(t_shell *shell)
 	syntax_err = ft_syntax_error(shell->line);
 	if (syntax_err)
 	{
-		shell->exit_status = syntax_err;
+		shell->exit_status = 2;
 		free(shell->line);
 		shell->line = NULL;
 		return (0);
