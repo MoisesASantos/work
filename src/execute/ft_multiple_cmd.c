@@ -14,6 +14,8 @@
 
 static void	ft_execute_cmd_multi(t_shell *shell)
 {
+	if (!shell->cmd->argv || !shell->cmd->argv[0])
+		exit(0);
 	if (ft_is_buildin(shell->cmd->argv[0]))
 	{
 		ft_execute_builtin(shell);

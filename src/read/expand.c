@@ -37,6 +37,8 @@ char	*handle_dollar(char *line, int *i, t_shell *shell)
 		(*i)++;
 		return (get_env_value(shell, "?"));
 	}
+	if (line[*i] == '\'' || line[*i] == '\"')
+		return (ft_strdup(""));
 	while (line[*i] && (ft_isalnum(line[*i]) || line[*i] == '_'))
 		(*i)++;
 	if (*i == start)
@@ -71,7 +73,8 @@ char	*expand_str(t_shell *shell, char *line)
 	{
 		update_quotes(line[i], &sq, &dq);
 		if (line[i] == '$' && !sq && \
-(ft_isalnum(line[i + 1]) || line[i + 1] == '_' || line[i + 1] == '?'))
+(ft_isalnum(line[i + 1]) || line[i + 1] == '_' || line[i + 1] == '?' || \
+line[i + 1] == '\'' || line[i + 1] == '\"'))
 		{
 			tmp = handle_dollar(line, &i, shell);
 			res = join_and_free(res, tmp);

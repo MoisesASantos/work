@@ -13,9 +13,12 @@
 #include "../include/shell.h"
 #include <signal.h>
 
+int	g_signal_received = 0;
+
 static void	ft_handle_signals(int sig)
 {
 	(void)sig;
+	g_signal_received = 130;
 	ft_putstr_fd("\n", STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);

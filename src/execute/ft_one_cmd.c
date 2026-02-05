@@ -39,24 +39,47 @@ static int	ft_execute_fork_cmd(t_shell *shell)
 	return (exit_code);
 }
 
-int	execute_one_command(t_shell *shell)
+static int	handle_redirect_only(t_shell *shell)
 {
 	int	original_fds[2];
 
-	if (!shell || !shell->cmd || !shell->cmd->argv || !shell->cmd->argv[0])
+	if (!shell->cmd->redirects)
 		return (1);
-	if (ft_is_buildin(shell->cmd->argv[0]))
+	ft_save_original_fd(original_fds);
+	if (ft_handle_redirect(shell->cmd) == 1)
 	{
-		ft_save_original_fd(original_fds);
-		if (ft_handle_redirect(shell->cmd) == 1)
-		{
-			ft_restore_fd(original_fds);
-			return (1);
-		}
-		shell->exit_status = ft_call_builtin(shell->cmd->argv, shell);
 		ft_restore_fd(original_fds);
-		ft_close_pipe(original_fds);
+		return (1);
 	}
+	ft_restore_fd(original_fds);
+	ft_close_pipe(original_fds);
+	return (0);
+}
+
+static int	execute_builtin_cmd(t_shell *shell)
+{
+	int	original_fds[2];
+
+	ft_save_original_fd(original_fds);
+	if (ft_handle_redirect(shell->cmd) == 1)
+	{
+		ft_restore_fd(original_fds);
+		return (1);
+	}
+	shell->exit_status = ft_call_builtin(shell->cmd->argv, shell);
+	ft_restore_fd(original_fds);
+	ft_close_pipe(original_fds);
+	return (shell->exit_status);
+}
+
+int	execute_one_command(t_shell *shell)
+{
+	if (!shell || !shell->cmd)
+		return (1);
+	if (!shell->cmd->argv || !shell->cmd->argv[0])
+		return (handle_redirect_only(shell));
+	if (ft_is_buildin(shell->cmd->argv[0]))
+		shell->exit_status = execute_builtin_cmd(shell);
 	else
 		shell->exit_status = ft_execute_fork_cmd(shell);
 	return (shell->exit_status);

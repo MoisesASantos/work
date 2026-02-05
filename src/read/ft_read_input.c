@@ -14,11 +14,18 @@
 
 int	ft_read_command(t_shell *shell)
 {
+	extern int	g_signal_received;
+
 	if (!shell)
 		return (0);
 	if (shell->line)
 		free(shell->line);
 	shell->line = readline("minishell->mucuashell> ");
+	if (g_signal_received)
+	{
+		shell->exit_status = g_signal_received;
+		g_signal_received = 0;
+	}
 	if (shell->line == NULL)
 	{
 		printf("Exit\n");

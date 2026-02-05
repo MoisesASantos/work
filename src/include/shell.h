@@ -29,6 +29,8 @@
 # define SHELLNAME "mucua-shell"
 # define EXIT_FAILURE 1
 
+extern int	g_signal_received;
+
 t_env	*ft_getenv(t_list *env, char *key);
 char	**ft_env_matrix(t_list *env);
 char	*join_and_free(char *dest, char *src);

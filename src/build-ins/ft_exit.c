@@ -11,14 +11,19 @@
 /* ************************************************************************** */
 
 #include "../include/shell.h"
+#include <limits.h>
 
 static int	ft_is_number(char *str)
 {
 	int	i;
 
+	if (!str || !str[0])
+		return (0);
 	i = -1;
 	if (str[++i] == '-' || str[i] == '+')
 		i++;
+	if (!str[i])
+		return (0);
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
@@ -31,6 +36,7 @@ static int	ft_is_number(char *str)
 static long	ft_atol(char *str)
 {
 	long	result;
+	long	prev;
 	int		sign;
 	int		i;
 
@@ -49,7 +55,11 @@ static long	ft_atol(char *str)
 	}
 	while (str[i] >= '0' && str[i] <= '9')
 	{
+		prev = result;
 		result = result * 10 + (str[i] - '0');
+		if (result < 0 || (sign == 1 && result < prev) || \
+(sign == -1 && result < 0 && prev >= 0))
+			return (LONG_MIN);
 		i++;
 	}
 	return (result * sign);
@@ -57,6 +67,8 @@ static long	ft_atol(char *str)
 
 int	ft_exit(t_shell *shell, char **args)
 {
+	long	exit_code;
+
 	if (ft_quant_matrix(args) > 2)
 	{
 		print_error_msg(args[0], "too many arguments");
@@ -72,5 +84,12 @@ int	ft_exit(t_shell *shell, char **args)
 	printf("exit\n");
 	if (!args[1])
 		return (0);
-	return (ft_atol(args[1]) & 0xFF);
+	exit_code = ft_atol(args[1]);
+	if (exit_code == LONG_MIN && \
+ft_strncmp(args[1], "-9223372036854775808", 21) != 0)
+	{
+		print_error_msg(args[0], "numeric argument required");
+		return (2);
+	}
+	return (exit_code & 0xFF);
 }

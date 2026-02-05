@@ -74,7 +74,7 @@ static int	ft_is_invalid_identity(char *str)
 	int	i;
 
 	i = -1;
-	if (!str)
+	if (!str || !str[0])
 		return (1);
 	while (str[++i] && str[i] != '=')
 	{
