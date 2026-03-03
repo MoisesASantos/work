@@ -41,7 +41,8 @@ static void	update_value_env(t_data *data, char *value)
 	}
 	if (aux)
 	{
-		free(aux->value);
+		if (!aux_old)
+			free(aux->value);
 		aux->value = tmp;
 	}
 }

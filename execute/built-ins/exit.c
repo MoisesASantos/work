@@ -34,6 +34,16 @@ static int	ft_isvalid_number(char *str, int *status_code)
 	return (1);
 }
 
+static void	clean_exit(t_data *data, int status_code)
+{
+	rl_clear_history();
+	free(data->input);
+	data->input = NULL;
+	reset_fd(data);
+	free_env_all(data);
+	exit(status_code);
+}
+
 int	execute_exit(t_data *data)
 
 {
@@ -46,14 +56,15 @@ int	execute_exit(t_data *data)
 	{
 		ft_putendl_fd("exit", STDERR_FILENO);
 		print_exit_error(data->cmd.cmd_exec[1], &status_code);
-		exit(status_code);
+		clean_exit(data, status_code);
 	}
-	if (data->cmd.cmd_exec[2])
+	if (data->cmd.cmd_exec[1] && data->cmd.cmd_exec[2])
 	{
 		ft_putendl_fd("exit", STDERR_FILENO);
 		ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
 		return (1);
 	}
 	ft_putendl_fd("exit", STDERR_FILENO);
-	exit(status_code);
+	clean_exit(data, status_code);
+	return (0);
 }

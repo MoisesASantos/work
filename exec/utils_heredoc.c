@@ -67,7 +67,11 @@ static void	hdoc_loop(t_data *data, t_hdoc *tmp, int fd)
 		}
 		if (ft_strncmp(tmp->linha, tmp->delimiter,
 				ft_strlen(tmp->linha) + 1) == 0)
+		{
+			free(tmp->linha);
+			tmp->linha = NULL;
 			exit(0);
+		}
 		process_hdoc_line(data, tmp, fd);
 	}
 }

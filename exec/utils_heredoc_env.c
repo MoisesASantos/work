@@ -117,7 +117,7 @@ char	*hdoc_env(char *str, t_data *data)
 	{
 		if (str[i] == '$')
 			aux = expand_dollar(str, &i, data);
-		if (str[i] != '$' && str[i])
+		else
 		{
 			len = ft_strlen(str + i);
 			next = ft_strchr(str + i, '$');

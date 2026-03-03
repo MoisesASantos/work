@@ -82,6 +82,7 @@ void	clear_hdoc(t_data *data)
 	{
 		data->cmd.redir.hdoc = tmp->next;
 		free(tmp->num);
+		free(tmp->delimiter);
 		unlink(tmp->path);
 		free(tmp->path);
 		free(tmp);

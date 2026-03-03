@@ -126,7 +126,11 @@ int	main(int argc, char **argv, char **envp)
 	{
 		data.input = readline("Minishell$ ");
 		if (data.input == NULL)
-				return (data.status);
+		{
+			rl_clear_history();
+			free_env_all(&data);
+			return (data.status);
+		}
 		if (data.input[0] != '\0')
 			add_history(data.input);
 		if (g_is_sigint != 0)

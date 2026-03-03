@@ -122,6 +122,7 @@ int	exec_no_built_in(t_data *data, int prev_fd, int *new_prev)
 	if (tmp.pid == -1)
 	{
 		perror("Error: create function fork()");
+		free_array(array_env);
 		return (1);
 	}
 	if (tmp.pid == 0)

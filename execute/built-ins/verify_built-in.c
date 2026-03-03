@@ -16,7 +16,10 @@ int	execute_if_built_exists(t_data *data)
 {
 	init_fd(data);
 	if (extract_fd(data) || to_redirect(data))
+	{
+		reset_fd(data);
 		return (1);
+	}
 	if (ft_strncmp(data->cmd.cmd_exec[0], "echo", 5) == 0)
 		return (execute_echo(data));
 	else if (ft_strncmp(data->cmd.cmd_exec[0], "cd", 3) == 0)
