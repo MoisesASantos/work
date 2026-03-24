@@ -1,65 +1,53 @@
-NAME = minishell
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -I. -Ilibft
-CLINKER = -lft -lreadline
-LIB_DIR = libft
-LIB = $(LIB_DIR)/libft.a
-SRC = main.c\
-	init/free.c\
-	init/free_extra.c\
-	init/envp_extract.c\
-	init/check_syntax.c\
-	init/extract_fd.c\
-	init/utils_check_syntax_redir.c\
-	parse/split_up.c\
-	exec/replace_env.c\
-	exec/remove_quote.c\
-	exec/redir.c\
-	exec/heredoc.c\
-	exec/signal.c\
-	exec/exec_range.c\
-	exec/exec_only_cmd.c\
-	exec/exec_many_cmds.c\
-	exec/utils_exec.c\
-	exec/utils_replace_enc.c\
-	exec/utils_redir.c\
-	exec/utils_heredoc.c\
-	exec/utils_heredoc_env.c\
-	utils/check_utils.c\
-	utils/str_utils.c\
-	execute/built-ins/verify_built-in.c\
-	execute/built-ins/echo.c\
-	execute/built-ins/cd.c\
-	execute/built-ins/pwd.c\
-	execute/built-ins/export.c\
-	execute/built-ins/utils_export.c\
-	execute/built-ins/env.c\
-	execute/built-ins/unset.c\
-	execute/built-ins/exit.c\
-	execute/built-ins/utils_exit.c\
-	execute/commands/verify_command.c
-	
-OBJS = $(SRC:.c=.o)
-HEADER = minishell.h
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: emjoao <emjoao@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/03/06 11:59:13 by mosantos          #+#    #+#              #
+#    Updated: 2026/03/20 17:56:59 by emjoao           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME		= cub3D
+SRC_DIR		= src
+LIBFT_DIR	= lib/libft
+LIBFT		= $(LIBFT_DIR)/libft.a
+MLX_DIR 	= ./minilibx-linux/
+MLX_LIB 	= ./minilibx-linux/libmlx.a
+MLXFLGAS 	= -Lminilibx-linux -lmlx -lXext -lX11 -lz -lm
+CC                      = cc
+CFLAGS          = -Wall -Wextra -g
+RM                      = rm -rf
+
+SRC			= $(wildcard $(SRC_DIR)/*.c $(SRC_DIR)/read/*.c $(SRC_DIR)/error_input/*.c $(SRC_DIR)/cleanup/*.c $(SRC_DIR)/execute/*.c $(SRC_DIR)/parsing/*.c $(SRC_DIR)/validation/*.c $(SRC_DIR)/utils/*.c $(SRC_DIR)/textures/*.c)
+OBJ			= $(SRC:.c=.o)
+HEADER		= $(wildcard $(SRC_DIR)/include/*.h)
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIB)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIB_DIR) $(CLINKER) -o $(NAME)
+$(NAME): $(OBJ) $(MLX_LIB)
+	@make -s -C $(LIBFT_DIR)
+	@$(CC) $(CFLAGS) $(OBJ) $(MLXFLGAS) $(LIBFT) -lm -o $(NAME)
+	@echo "✅ [TENHO WILDCARD, DON'T FORGET]"
 
-$(OBJS): $(HEADER)
+%.o: %.c $(HEADER)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIB):
-	@$(MAKE) -C $(LIB_DIR)
-	
+$(MLX_LIB):
+	@make -s -C $(MLX_DIR)
+
 clean:
-	rm -f $(OBJS)
-	@$(MAKE) -C $(LIB_DIR) clean
-	
+	@make clean -C $(LIBFT_DIR)
+	@make -s -C $(MLX_DIR) clean
+	@$(RM) $(OBJ)
+
 fclean: clean
-	rm -f $(NAME)
-	@$(MAKE) -C $(LIB_DIR) fclean
+	@make fclean -C $(LIBFT_DIR)
+	@$(RM) $(NAME)
 
 re: fclean all
-	
+
 .PHONY: all clean fclean re
+
