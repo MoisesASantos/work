@@ -1,8 +1,10 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { Upload, Camera, Eye, BadgeCheck, Plus, Minus, ArrowRight, Sparkles, Pill, ShieldCheck } from "lucide-react"
+import Link from "next/link"
+import { Upload, Camera, Eye, BadgeCheck, Plus, Minus, ArrowRight, Sparkles, Pill, ShieldCheck, MapPin, Building2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
 interface IdentifiedMedicine {
@@ -13,6 +15,24 @@ interface IdentifiedMedicine {
   price: number
   quantity: number
 }
+
+interface PharmacyMatch {
+  id: string
+  name: string
+  address: string
+  distance: string
+  matchedCount: number
+  totalItems: number
+  totalPrice: number
+  missingItems: string[]
+}
+
+// Mock pharmacies for the search result
+const mockPharmacies = [
+  { id: "p1", name: "Apothecary Maianga", address: "Maianga, Luanda", distance: "2.5 km" },
+  { id: "p2", name: "Farmácia Welwitschia", address: "Talatona", distance: "1.2 km" },
+  { id: "p3", name: "Farmácia Central", address: "Ingombota", distance: "4.0 km" },
+]
 
 const mockIdentifiedMedicines: IdentifiedMedicine[] = [
   {
@@ -38,6 +58,14 @@ export default function ReceitasPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [identifiedMedicines, setIdentifiedMedicines] = useState<IdentifiedMedicine[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  // States for Manual Entry
+  const [isAddingManual, setIsAddingManual] = useState(false)
+  const [manualMedName, setManualMedName] = useState("")
+
+  // States for Search
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchResults, setSearchResults] = useState<PharmacyMatch[]>([])
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -45,6 +73,7 @@ export default function ReceitasPage() {
       const reader = new FileReader()
       reader.onload = (e) => {
         setUploadedImage(e.target?.result as string)
+        setSearchResults([]) // Reset results on new upload
         simulateAnalysis()
       }
       reader.readAsDataURL(file)
@@ -59,12 +88,73 @@ export default function ReceitasPage() {
     }, 2000)
   }
 
+  const handleAddManual = () => {
+    if (!manualMedName.trim()) return
+    
+    const newMed: IdentifiedMedicine = {
+      id: `manual-${Date.now()}`,
+      name: manualMedName,
+      description: "Adicionado manualmente",
+      confidence: 100,
+      price: Math.floor(Math.random() * 3000) + 1000, // Random price for mock
+      quantity: 1
+    }
+    
+    setIdentifiedMedicines(prev => [...prev, newMed])
+    setManualMedName("")
+    setIsAddingManual(false)
+    setSearchResults([]) // Reset search if list changes
+  }
+
   const updateQuantity = (id: string, delta: number) => {
     setIdentifiedMedicines((prev) =>
       prev.map((med) =>
         med.id === id ? { ...med, quantity: Math.max(1, med.quantity + delta) } : med
       )
     )
+    setSearchResults([]) // Reset search if list changes
+  }
+
+  const handleSearchPharmacies = () => {
+    setIsSearching(true)
+    
+    setTimeout(() => {
+      const totalItems = identifiedMedicines.length
+      
+      // Generate realistic looking matches (Pharmacies having varying amounts of the meds)
+      const generatedResults: PharmacyMatch[] = mockPharmacies.map((pharmacy, index) => {
+        // Just a mock logic: First pharmacy has all items, second misses 1, third misses 2 (if length allows)
+        const missedCount = Math.min(index, totalItems)
+        const matchedCount = totalItems - missedCount
+        
+        const matchedMeds = identifiedMedicines.slice(0, matchedCount)
+        const missingMeds = identifiedMedicines.slice(matchedCount).map(m => m.name)
+        
+        const totalPrice = matchedMeds.reduce((sum, m) => sum + (m.price * m.quantity), 0)
+        
+        return {
+          id: pharmacy.id,
+          name: pharmacy.name,
+          address: pharmacy.address,
+          distance: pharmacy.distance,
+          matchedCount,
+          totalItems,
+          totalPrice,
+          missingItems: missingMeds
+        }
+      })
+      
+      // Sort by matched count (highest first), then by price (lowest first)
+      generatedResults.sort((a, b) => {
+        if (b.matchedCount !== a.matchedCount) {
+          return b.matchedCount - a.matchedCount
+        }
+        return a.totalPrice - b.totalPrice
+      })
+      
+      setSearchResults(generatedResults)
+      setIsSearching(false)
+    }, 1500)
   }
 
   const totalPrice = identifiedMedicines.reduce(
@@ -239,33 +329,127 @@ export default function ReceitasPage() {
               ))}
 
               {/* Manual Add Button */}
-              <button className="w-full py-4 border-2 border-dashed border-border/40 rounded-xl text-muted-foreground font-semibold flex items-center justify-center gap-2 hover:bg-muted transition-colors">
-                <Plus className="w-5 h-5" />
-                Adicionar medicamento manualmente
-              </button>
+              {isAddingManual ? (
+                <div className="p-4 border-2 border-primary/20 bg-primary/5 rounded-xl space-y-3">
+                  <Input 
+                    placeholder="Nome do medicamento (ex: Aspegic 500mg)"
+                    value={manualMedName}
+                    onChange={(e) => setManualMedName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddManual()}
+                    autoFocus
+                  />
+                  <div className="flex gap-2 justify-end">
+                    <Button variant="ghost" size="sm" onClick={() => setIsAddingManual(false)}>Cancelar</Button>
+                    <Button size="sm" onClick={handleAddManual}>Adicionar</Button>
+                  </div>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setIsAddingManual(true)}
+                  className="w-full py-4 border-2 border-dashed border-border/40 rounded-xl text-muted-foreground font-semibold flex items-center justify-center gap-2 hover:bg-muted hover:border-primary/40 transition-all"
+                >
+                  <Plus className="w-5 h-5" />
+                  Adicionar medicamento manualmente
+                </button>
+              )}
             </div>
 
             {/* Summary */}
-            {identifiedMedicines.length > 0 && (
+            {identifiedMedicines.length > 0 && searchResults.length === 0 && (
               <div className="mt-10 pt-8 border-t border-border/20">
-                <div className="flex justify-between mb-2">
-                  <span className="text-muted-foreground">
-                    Subtotal ({identifiedMedicines.reduce((sum, m) => sum + m.quantity, 0)} Itens)
-                  </span>
-                  <span suppressHydrationWarning className="font-bold">{totalPrice.toLocaleString()} Kz</span>
-                </div>
-                <div className="flex justify-between mb-6">
-                  <span className="text-muted-foreground">Taxa de Servico</span>
-                  <span className="text-tertiary font-bold">Gratis</span>
-                </div>
-                <div className="flex justify-between items-end mb-8">
-                  <span className="text-primary font-bold">Total Estimado</span>
-                  <span suppressHydrationWarning className="text-primary text-3xl font-black">{totalPrice.toLocaleString()} Kz</span>
-                </div>
-                <Button size="lg" className="w-full py-6 rounded-2xl font-extrabold text-lg shadow-xl">
-                  Prosseguir para Encomenda
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                <Button 
+                  size="lg" 
+                  className="w-full py-6 rounded-2xl font-extrabold text-lg shadow-xl"
+                  onClick={handleSearchPharmacies}
+                  disabled={isSearching}
+                >
+                  {isSearching ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Procurando Farmácias...
+                    </div>
+                  ) : (
+                    <>
+                      Procurar nestas Farmácias
+                      <Search className="w-5 h-5 ml-2" />
+                    </>
+                  )}
                 </Button>
+              </div>
+            )}
+
+            {/* Match Results */}
+            {searchResults.length > 0 && (
+              <div className="mt-10 pt-8 border-t border-border/20 space-y-4">
+                <h4 className="font-bold text-lg text-foreground mb-4">Melhores Opções Encontradas</h4>
+                
+                {searchResults.map((result, idx) => (
+                  <div key={result.id} className={cn(
+                    "p-5 rounded-2xl border-2 transition-all relative overflow-hidden group hover:shadow-md",
+                    idx === 0 ? "border-primary bg-primary/5" : "border-border/40 bg-card"
+                  )}>
+                    {idx === 0 && (
+                      <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
+                        Recomendado
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h5 className="font-bold text-foreground flex items-center gap-2">
+                          <Building2 className="w-4 h-4 text-primary" />
+                          {result.name}
+                        </h5>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                          <MapPin className="w-3 h-3" />
+                          {result.address} ({result.distance})
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span suppressHydrationWarning className="block font-black text-primary text-xl">
+                          {result.totalPrice.toLocaleString()} <span className="text-xs font-medium">Kz</span>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3 mt-4">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-semibold text-foreground">
+                          Tem {result.matchedCount} de {result.totalItems} medicamentos
+                        </span>
+                        <span className="px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-xs font-bold">
+                          {Math.round((result.matchedCount / result.totalItems) * 100)}% Match
+                        </span>
+                      </div>
+                      
+                      {/* Progress Bar */}
+                      <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-primary rounded-full transition-all" 
+                          style={{ width: `${(result.matchedCount / result.totalItems) * 100}%` }}
+                        />
+                      </div>
+
+                      {result.missingItems.length > 0 && (
+                        <div className="mt-3 p-3 bg-destructive/5 rounded-xl border border-destructive/10">
+                          <p className="text-xs font-bold text-destructive mb-1">Em Falta:</p>
+                          <ul className="text-xs text-destructive/80 list-disc pl-4 space-y-0.5">
+                            {result.missingItems.map(item => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      <Button asChild className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90">
+                        <Link href={`/farmacias/${result.id}`}>
+                          Prosseguir com esta Farmácia
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
