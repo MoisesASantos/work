@@ -21,11 +21,11 @@ const navItems = [
   { href: "/suporte", label: "Assistente IA", icon: MessageCircle },
 ]
 
-export function Sidebar() {
+export function SidebarContent() {
   const pathname = usePathname()
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 hidden md:flex flex-col border-r border-border/15 bg-slate-50 dark:bg-slate-950 z-50 p-4">
+    <>
       <div className="flex items-center gap-3 mb-10 px-2 pt-2">
         <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground">
           <Pill className="w-5 h-5" />
@@ -83,7 +83,14 @@ export function Sidebar() {
           <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
         </Link>
       </div>
+    </>
+  )
+}
 
+export function Sidebar() {
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-64 hidden md:flex flex-col border-r border-border/15 bg-slate-50 dark:bg-slate-950 z-50 p-4">
+      <SidebarContent />
     </aside>
   )
 }
