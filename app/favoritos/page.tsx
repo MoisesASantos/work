@@ -8,14 +8,14 @@ const favoritePharmacies = [
   {
     id: "maianga",
     name: "Apothecary Maianga",
-    address: "Maianga, Av. Revolucao de Outubro",
+    address: "Maianga, Av. Revolução de Outubro",
     rating: 4.9,
     reviews: "340+",
     status: "24h",
   },
   {
     id: "welwitschia",
-    name: "Farmacia Welwitschia",
+    name: "Farmácia Welwitschia",
     address: "Talatona, Rua do MAT",
     rating: 4.8,
     reviews: "120+",
@@ -42,13 +42,13 @@ export default function FavoritosPage() {
   return (
     <div className="px-6 md:px-12 max-w-6xl mx-auto py-8">
       <h1 className="text-3xl font-extrabold text-primary mb-2 font-serif">Meus Favoritos</h1>
-      <p className="text-muted-foreground mb-8">Aceda rapidamente as suas farmacias e medicamentos preferidos.</p>
+      <p className="text-muted-foreground mb-8">Aceda rapidamente às suas farmácias e medicamentos preferidos.</p>
 
       {/* Favorite Pharmacies */}
       <section className="mb-12">
         <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
           <Heart className="w-5 h-5 text-destructive fill-destructive" />
-          Instituicoes de Saude Favoritas
+          Instituições de Saúde Favoritas
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {favoritePharmacies.map((pharmacy) => (
@@ -108,7 +108,7 @@ export default function FavoritosPage() {
                 </button>
               </div>
               <div className="flex items-center justify-between mt-4">
-                <p className="text-lg font-black text-primary">
+                <p suppressHydrationWarning className="text-lg font-black text-primary">
                   {medicine.price.toLocaleString()} <span className="text-xs font-medium">Kz</span>
                 </p>
                 <Button size="sm" className="rounded-lg">
@@ -125,7 +125,7 @@ export default function FavoritosPage() {
           <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-xl font-bold text-foreground mb-2">Nenhum favorito ainda</h3>
           <p className="text-muted-foreground mb-6">
-            Comece a adicionar instituicoes de saude e medicamentos aos seus favoritos.
+            Comece a adicionar instituições de saúde e medicamentos aos seus favoritos.
           </p>
           <Button asChild>
             <Link href="/">Explorar</Link>

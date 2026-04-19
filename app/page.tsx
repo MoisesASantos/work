@@ -19,7 +19,7 @@ import {
 const healthFacilities: HealthFacility[] = [
   {
     id: "welwitschia",
-    name: "Farmacia Welwitschia",
+    name: "Farmácia Welwitschia",
     type: "farmacia",
     address: "Talatona, Rua do MAT",
     rating: 4.8,
@@ -31,7 +31,7 @@ const healthFacilities: HealthFacility[] = [
     id: "maianga",
     name: "Apothecary Maianga",
     type: "farmacia",
-    address: "Maianga, Av. Revolucao de Outubro",
+    address: "Maianga, Av. Revolução de Outubro",
     rating: 4.9,
     reviews: "340+",
     distance: "2.5 km",
@@ -50,7 +50,7 @@ const healthFacilities: HealthFacility[] = [
   },
   {
     id: "centro-saude-cazenga",
-    name: "Centro de Saude do Cazenga",
+    name: "Centro de Saúde do Cazenga",
     type: "posto",
     address: "Cazenga, Rua Principal",
     rating: 4.3,
@@ -60,9 +60,9 @@ const healthFacilities: HealthFacility[] = [
   },
   {
     id: "clinica-sagrada",
-    name: "Clinica Sagrada Esperanca",
+    name: "Clínica Sagrada Esperança",
     type: "hospital",
-    address: "Talatona, Zona Economica",
+    address: "Talatona, Zona Económica",
     rating: 4.9,
     reviews: "1.2k",
     distance: "5.2 km",
@@ -71,7 +71,7 @@ const healthFacilities: HealthFacility[] = [
   },
   {
     id: "farmacia-central",
-    name: "Farmacia Central",
+    name: "Farmácia Central",
     type: "farmacia",
     address: "Ingombota, Rua Rainha Ginga",
     rating: 4.5,
@@ -81,7 +81,7 @@ const healthFacilities: HealthFacility[] = [
   },
   {
     id: "posto-viana",
-    name: "Posto Medico de Viana",
+    name: "Posto Médico de Viana",
     type: "posto",
     address: "Viana, Sector 12",
     rating: 4.2,
@@ -94,7 +94,7 @@ const healthFacilities: HealthFacility[] = [
 // Main visible filters
 const mainFilters = [
   { id: "24h", label: "Aberto 24H", icon: Clock },
-  { id: "proximas", label: "Mais Proximas", icon: MapPin },
+  { id: "proximas", label: "Mais Próximas", icon: MapPin },
   { id: "baratas", label: "Mais Baratas", icon: Banknote },
   { id: "avaliadas", label: "Melhor Avaliadas", icon: Star },
 ]
@@ -103,8 +103,8 @@ const mainFilters = [
 const extraFilters = [
   { id: "abertas", label: "Abertas Agora" },
   { id: "estacionamento", label: "Com Estacionamento" },
-  { id: "acessibilidade", label: "Acessivel" },
-  { id: "plantao", label: "Em Plantao" },
+  { id: "acessibilidade", label: "Acessível" },
+  { id: "plantao", label: "Em Plantão" },
 ]
 
 // Combined filters in dropdown
@@ -425,7 +425,7 @@ export default function ExplorePage() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="block font-black text-primary text-sm">
+                      <span suppressHydrationWarning className="block font-black text-primary text-sm">
                         {result.medicine.price.toLocaleString()} <span className="text-[10px] font-medium">Kz</span>
                       </span>
                     </div>

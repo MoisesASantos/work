@@ -133,7 +133,7 @@ export default function SearchResultsPage() {
                 <div className="text-right">
                   {result.inStock ? (
                     <>
-                      <div className="text-2xl font-extrabold text-primary">
+                      <div suppressHydrationWarning className="text-2xl font-extrabold text-primary">
                         {result.price.toLocaleString()} <span className="text-xs font-medium text-muted-foreground">Kz</span>
                       </div>
                       <span className="text-[10px] uppercase tracking-wider font-bold text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded">

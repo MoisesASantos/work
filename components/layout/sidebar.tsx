@@ -8,8 +8,11 @@ import {
   Heart, 
   FileText, 
   MessageCircle, 
-  Pill
+  Pill,
+  LogOut,
+  ChevronRight
 } from "lucide-react"
+import Image from "next/image"
 
 const navItems = [
   { href: "/", label: "Explorar", icon: Search },
@@ -60,6 +63,26 @@ export function Sidebar() {
           )
         })}
       </nav>
+
+      {/* User Session Section */}
+      <div className="pt-4 border-t border-border/15">
+        <Link href="/perfil" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
+            <Image
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+              alt="Foto de perfil"
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <p className="text-sm font-bold text-foreground truncate">João Silva</p>
+            <p className="text-[11px] text-muted-foreground truncate">joao.silva@email.com</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        </Link>
+      </div>
 
     </aside>
   )

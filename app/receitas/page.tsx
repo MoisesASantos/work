@@ -18,7 +18,7 @@ const mockIdentifiedMedicines: IdentifiedMedicine[] = [
   {
     id: "amoxicilina",
     name: "Amoxicilina 500mg",
-    description: "Capsulas - Uso continuo (7 dias)",
+    description: "Cápsulas - Uso contínuo (7 dias)",
     confidence: 98,
     price: 2450,
     quantity: 1,
@@ -81,7 +81,7 @@ export default function ReceitasPage() {
             Digitalize a sua Receita.
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Carregue a foto da sua prescricao medica. A nossa Inteligencia Artificial identificara automaticamente os medicamentos e verificara o stock nas farmacias mais proximas de Luanda.
+            Carregue a foto da sua prescrição médica. A nossa Inteligência Artificial identificará automaticamente os medicamentos e verificará o stock nas farmácias mais próximas de Luanda.
           </p>
         </div>
       </section>
@@ -119,7 +119,7 @@ export default function ReceitasPage() {
               </Button>
               <div className="pt-4 text-xs text-muted-foreground font-medium tracking-widest uppercase flex items-center justify-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
-                Seguro & Privado - Encriptacao de 256 bits
+                Seguro & Privado - Encriptação de 256 bits
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@ export default function ReceitasPage() {
               <div className="flex items-center justify-between mb-6">
                 <h4 className="font-bold text-primary flex items-center gap-2">
                   <Eye className="w-5 h-5" />
-                  Visualizacao da Receita
+                  Visualização da Receita
                 </h4>
                 {!isAnalyzing && identifiedMedicines.length > 0 && (
                   <span className="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[11px] font-bold rounded-full uppercase tracking-tighter">
@@ -215,7 +215,7 @@ export default function ReceitasPage() {
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">{medicine.description}</p>
                     <div className="mt-3 flex items-center justify-between">
-                      <span className="text-primary font-bold text-lg">
+                      <span suppressHydrationWarning className="text-primary font-bold text-lg">
                         {medicine.price.toLocaleString()} <span className="text-xs">Kz</span>
                       </span>
                       <div className="flex items-center gap-2">
@@ -252,7 +252,7 @@ export default function ReceitasPage() {
                   <span className="text-muted-foreground">
                     Subtotal ({identifiedMedicines.reduce((sum, m) => sum + m.quantity, 0)} Itens)
                   </span>
-                  <span className="font-bold">{totalPrice.toLocaleString()} Kz</span>
+                  <span suppressHydrationWarning className="font-bold">{totalPrice.toLocaleString()} Kz</span>
                 </div>
                 <div className="flex justify-between mb-6">
                   <span className="text-muted-foreground">Taxa de Servico</span>
@@ -260,7 +260,7 @@ export default function ReceitasPage() {
                 </div>
                 <div className="flex justify-between items-end mb-8">
                   <span className="text-primary font-bold">Total Estimado</span>
-                  <span className="text-primary text-3xl font-black">{totalPrice.toLocaleString()} Kz</span>
+                  <span suppressHydrationWarning className="text-primary text-3xl font-black">{totalPrice.toLocaleString()} Kz</span>
                 </div>
                 <Button size="lg" className="w-full py-6 rounded-2xl font-extrabold text-lg shadow-xl">
                   Prosseguir para Encomenda

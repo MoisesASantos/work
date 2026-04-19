@@ -15,7 +15,7 @@ interface PharmacyMapProps {
 }
 
 const defaultMarkers: MapMarker[] = [
-  { id: "1", name: "Farmacia Welwitschia", position: { top: "33%", left: "25%" }, highlighted: true },
+  { id: "1", name: "Farmácia Welwitschia", position: { top: "33%", left: "25%" }, highlighted: true },
   { id: "2", name: "Apothecary Maianga", position: { top: "50%", left: "66%" } },
 ]
 
@@ -73,12 +73,12 @@ export function PharmacyMap({ markers = defaultMarkers }: PharmacyMapProps) {
               <Truck className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-foreground leading-tight">Entrega Rapida em Luanda</h4>
-              <p className="text-xs text-muted-foreground">Tempo medio: 45 min</p>
+              <h4 className="text-sm font-bold text-foreground leading-tight">Entrega Rápida em Luanda</h4>
+              <p className="text-xs text-muted-foreground">Tempo médio: 45 min</p>
             </div>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Encontramos <strong>14 farmacias</strong> disponiveis para entrega imediata na sua zona atual.
+            Encontramos <strong>14 farmácias</strong> disponíveis para entrega imediata na sua zona atual.
           </p>
           <Button className="w-full rounded-2xl py-6 font-bold shadow-lg">
             Ver Lista Completa

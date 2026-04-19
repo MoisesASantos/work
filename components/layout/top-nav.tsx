@@ -35,13 +35,13 @@ export function TopNav() {
         </button>
 
         {/* Profile */}
-        <Link href="/perfil" className="w-9 h-9 rounded-full bg-muted overflow-hidden ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
+        <Link href="/perfil" className="relative w-9 h-9 rounded-full bg-muted overflow-hidden ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
           <Image
             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
             alt="Perfil do utilizador"
-            width={36}
-            height={36}
-            className="w-full h-full object-cover"
+            fill
+            priority
+            className="object-cover"
           />
         </Link>
       </div>

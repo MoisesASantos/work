@@ -29,14 +29,14 @@ const initialMessages: Message[] = [
     id: "1",
     type: "assistant",
     content:
-      "Ola! Sou o seu Assistente da Apothecary. Como posso ajudar com as suas questoes sobre medicamentos hoje? Posso verificar dosagens, sugerir alternativas genericas ou localizar farmacias com stock em Luanda.",
+      "Olá! Sou o seu Assistente da Apothecary. Como posso ajudar com as suas questões sobre medicamentos hoje? Posso verificar dosagens, sugerir alternativas genéricas ou localizar farmácias com stock em Luanda.",
     timestamp: "09:41",
   },
 ]
 
 const suggestedActions = [
   "Onde encontrar em Luanda?",
-  "Quais os efeitos secundarios?",
+  "Quais os efeitos secundários?",
   "Pode ser tomado com Ibuprofeno?",
   "Ver bula completa",
 ]
@@ -75,17 +75,17 @@ export default function SuportePage() {
         id: (Date.now() + 1).toString(),
         type: "assistant",
         content:
-          "Para um adulto de 75kg, a dosagem padrao de Paracetamol e geralmente de 500mg a 1000mg a cada 4 a 6 horas. Nao exceda 4000mg (4g) num periodo de 24 horas.",
+          "Para um adulto de 75kg, a dosagem padrão de Paracetamol é geralmente de 500mg a 1000mg a cada 4 a 6 horas. Não exceda 4000mg (4g) num período de 24 horas.",
         timestamp: new Date().toLocaleTimeString("pt-AO", { hour: "2-digit", minute: "2-digit" }),
         card: {
-          title: "Informacao de Dosagem:",
+          title: "Informação de Dosagem:",
           description:
-            "Para um adulto de 75kg, a dosagem padrao de Paracetamol e geralmente de 500mg a 1000mg a cada 4 a 6 horas. Nao exceda 4000mg (4g) num periodo de 24 horas.",
+            "Para um adulto de 75kg, a dosagem padrão de Paracetamol é geralmente de 500mg a 1000mg a cada 4 a 6 horas. Não exceda 4000mg (4g) num período de 24 horas.",
           alternatives: [
-            { name: "Generico A", lab: "Laboratorios Angola", price: "850 Kz" },
+            { name: "Genérico A", lab: "Laboratórios Angola", price: "850 Kz" },
             { name: "Paracetam-L", lab: "Pharma Local", price: "920 Kz" },
           ],
-          note: "Esta informacao e meramente informativa. Consulte sempre um farmaceutico ou medico antes de iniciar qualquer medicacao.",
+          note: "Esta informação é meramente informativa. Consulte sempre um farmacêutico ou médico antes de iniciar qualquer medicação.",
         },
       }
 
@@ -215,14 +215,14 @@ export default function SuportePage() {
       </section>
 
       {/* Input Bar */}
-      <div className="fixed bottom-0 right-0 left-0 md:left-64 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl px-6 pt-4 pb-8 border-t border-transparent shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-40">
+      <div className="fixed bottom-[72px] md:bottom-0 right-0 left-0 md:left-64 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl px-4 md:px-6 pt-4 pb-6 border-t border-transparent shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-40">
         {/* Suggested Actions */}
-        <div className="max-w-5xl mx-auto mb-4 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="md:max-w-2xl mr-16 md:mx-auto mb-4 flex flex-wrap gap-2 h-[34px] overflow-hidden">
           {suggestedActions.map((action) => (
             <button
               key={action}
               onClick={() => handleSuggestedAction(action)}
-              className="whitespace-nowrap px-4 py-2 bg-secondary text-secondary-foreground text-xs rounded-full font-medium hover:opacity-90 transition-all"
+              className="whitespace-nowrap px-4 py-2 bg-secondary text-secondary-foreground text-[11px] md:text-xs rounded-full font-semibold hover:opacity-90 transition-all flex-shrink-0"
             >
               {action}
             </button>
@@ -230,26 +230,25 @@ export default function SuportePage() {
         </div>
 
         {/* Input Box */}
-        <div className="max-w-5xl mx-auto relative group">
+        <div className="md:max-w-2xl mr-16 md:mx-auto relative group">
           <Input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Pergunte sobre medicamentos ou dosagens..."
-            className="w-full bg-muted border-none rounded-2xl py-6 pl-6 pr-24"
+            className="w-full bg-muted border-none rounded-2xl h-14 pl-5 pr-24 text-sm"
           />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button className="p-2 text-muted-foreground hover:text-primary transition-colors">
-              <Paperclip className="w-5 h-5" />
+              <Paperclip className="w-4 h-4" />
             </button>
             <Button
-              size="icon"
               onClick={handleSend}
               disabled={!inputValue.trim()}
-              className="rounded-xl shadow-lg"
+              className="w-11 h-11 rounded-xl shadow-md p-0 flex items-center justify-center"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             </Button>
           </div>
         </div>

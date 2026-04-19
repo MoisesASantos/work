@@ -28,7 +28,7 @@ const statusLabels = {
 
 const typeConfig = {
   farmacia: { 
-    label: "Farmacia", 
+    label: "Farmácia", 
     icon: Pill, 
     className: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" 
   },
@@ -38,7 +38,7 @@ const typeConfig = {
     className: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" 
   },
   posto: { 
-    label: "Posto Medico", 
+    label: "Posto Médico", 
     icon: Stethoscope, 
     className: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" 
   },
