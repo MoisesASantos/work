@@ -1,0 +1,186 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Apothecary Angola Theme - Primary Blue */
+  --background: #f9f9ff;
+  --foreground: #191c20;
+  --card: #ffffff;
+  --card-foreground: #191c20;
+  --popover: #ffffff;
+  --popover-foreground: #191c20;
+  --primary: #003b72;
+  --primary-foreground: #ffffff;
+  --secondary: #c8dbfe;
+  --secondary-foreground: #4d607e;
+  --muted: #e7e8ef;
+  --muted-foreground: #424751;
+  --accent: #d5e3ff;
+  --accent-foreground: #061c37;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --border: #c2c6d3;
+  --input: #e7e8ef;
+  --ring: #003b72;
+  --radius: 0.75rem;
+  
+  /* Custom Apothecary Colors */
+  --surface: #f9f9ff;
+  --surface-container: #ededf4;
+  --surface-container-low: #f3f3fa;
+  --surface-container-high: #e7e8ef;
+  --surface-container-lowest: #ffffff;
+  --on-surface: #191c20;
+  --on-surface-variant: #424751;
+  --outline: #727782;
+  --outline-variant: #c2c6d3;
+  --tertiary: #004614;
+  --tertiary-fixed: #83fc8e;
+  --on-tertiary-fixed: #002106;
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --on-error: #ffffff;
+  --primary-container: #00529b;
+  --on-primary-container: #a5c7ff;
+  
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #191c20;
+  --sidebar-primary: #003b72;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #dbeafe;
+  --sidebar-accent-foreground: #003b72;
+  --sidebar-border: rgba(226, 232, 240, 0.15);
+  --sidebar-ring: #003b72;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f0f0f7;
+  --card: #1e293b;
+  --card-foreground: #f0f0f7;
+  --popover: #1e293b;
+  --popover-foreground: #f0f0f7;
+  --primary: #a6c8ff;
+  --primary-foreground: #001c3b;
+  --secondary: #354764;
+  --secondary-foreground: #d5e3ff;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --accent: #1e3a5f;
+  --accent-foreground: #d5e3ff;
+  --destructive: #ffdad6;
+  --destructive-foreground: #93000a;
+  --border: #334155;
+  --input: #334155;
+  --ring: #a6c8ff;
+  
+  /* Custom Apothecary Colors - Dark */
+  --surface: #0f172a;
+  --surface-container: #1e293b;
+  --surface-container-low: #1a2438;
+  --surface-container-high: #334155;
+  --surface-container-lowest: #0a0f1a;
+  --on-surface: #f0f0f7;
+  --on-surface-variant: #94a3b8;
+  --outline: #64748b;
+  --outline-variant: #475569;
+  --tertiary: #66de74;
+  --tertiary-fixed: #66df75;
+  --on-tertiary-fixed: #002106;
+  --error: #ffdad6;
+  --error-container: #93000a;
+  --on-error: #93000a;
+  --primary-container: #004787;
+  --on-primary-container: #a5c7ff;
+  
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f0f0f7;
+  --sidebar-primary: #a6c8ff;
+  --sidebar-primary-foreground: #001c3b;
+  --sidebar-accent: #1e3a5f;
+  --sidebar-accent-foreground: #a6c8ff;
+  --sidebar-border: #334155;
+  --sidebar-ring: #a6c8ff;
+}
+
+@theme inline {
+  --font-sans: 'Inter', 'Geist', sans-serif;
+  --font-serif: 'Manrope', 'Geist', sans-serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  
+  /* Custom Apothecary tokens */
+  --color-surface: var(--surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-fixed: var(--tertiary-fixed);
+  --color-on-tertiary-fixed: var(--on-tertiary-fixed);
+  --color-error: var(--error);
+  --color-error-container: var(--error-container);
+  --color-on-error: var(--on-error);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
