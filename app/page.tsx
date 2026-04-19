@@ -5,6 +5,7 @@ import { Search, SlidersHorizontal, X, Clock, MapPin, Banknote, Star, Building2,
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { HealthFacilityCard, type HealthFacility } from "@/components/health/health-facility-card"
+import { MedicineCard, type Medicine } from "@/components/pharmacy/medicine-card"
 import { AngolaMap } from "@/components/health/angola-map"
 import {
   DropdownMenu,
@@ -98,7 +99,7 @@ const mainFilters = [
   { id: "avaliadas", label: "Melhor Avaliadas", icon: Star },
 ]
 
-// Additional filters in dropdown
+// Additional filters that were in dropdown
 const extraFilters = [
   { id: "abertas", label: "Abertas Agora" },
   { id: "estacionamento", label: "Com Estacionamento" },
@@ -106,18 +107,76 @@ const extraFilters = [
   { id: "plantao", label: "Em Plantao" },
 ]
 
+// Combined filters in dropdown
+const allExtraFilters = [
+  ...mainFilters,
+  ...extraFilters
+]
+
 const typeFilters = [
   { id: null, label: "Todos", icon: null },
-  { id: "farmacia", label: "Farmacias", icon: Pill },
+  { id: "farmacia", label: "Farmácias", icon: Pill },
   { id: "hospital", label: "Hospitais", icon: Building2 },
-  { id: "posto", label: "Postos Medicos", icon: Stethoscope },
+  { id: "posto", label: "Postos Médicos", icon: Stethoscope },
+]
+
+// Mock medicines database
+const mockMedicines: (Medicine & { pharmacyId: string, pharmacyName: string, distance: string, status: string })[] = [
+  {
+    id: "med-1",
+    name: "Paracetamol 500mg",
+    description: "Analgésico e antipirético.",
+    price: 1500,
+    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80",
+    inStock: true,
+    pharmacyId: "welwitschia",
+    pharmacyName: "Farmácia Welwitschia",
+    distance: "1.2 km",
+    status: "open",
+  },
+  {
+    id: "med-2",
+    name: "Ibuprofeno 400mg",
+    description: "Anti-inflamatório não esteroide.",
+    price: 2200,
+    image: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=400&q=80",
+    inStock: true,
+    pharmacyId: "maianga",
+    pharmacyName: "Apothecary Maianga",
+    distance: "2.5 km",
+    status: "24h",
+  },
+  {
+    id: "med-3",
+    name: "Amoxicilina 500mg",
+    description: "Antibiótico.",
+    price: 3500,
+    image: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&q=80",
+    inStock: true,
+    requiresPrescription: true,
+    pharmacyId: "maianga",
+    pharmacyName: "Apothecary Maianga",
+    distance: "2.5 km",
+    status: "24h",
+  },
+  {
+    id: "med-4",
+    name: "Vitamina C 1g",
+    description: "Suplemento vitamínico.",
+    price: 1800,
+    image: "https://images.unsplash.com/photo-1550572017-edb3f5728a33?w=400&q=80",
+    inStock: true,
+    pharmacyId: "farmacia-central",
+    pharmacyName: "Farmácia Central",
+    distance: "1.8 km",
+    status: "closing-soon",
+  },
 ]
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeFilter, setActiveFilter] = useState("proximas")
   const [selectedType, setSelectedType] = useState<string | null>(null)
-  const [extraActiveFilters, setExtraActiveFilters] = useState<string[]>([])
+  const [extraActiveFilters, setExtraActiveFilters] = useState<string[]>(["proximas"])
   const [isMapFullscreen, setIsMapFullscreen] = useState(false)
 
   const toggleExtraFilter = (filterId: string) => {
@@ -128,29 +187,70 @@ export default function ExplorePage() {
     )
   }
 
-  const filteredFacilities = healthFacilities.filter((facility) => {
-    const matchesSearch =
-      facility.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      facility.address.toLowerCase().includes(searchQuery.toLowerCase())
-    
-    const matchesType = selectedType ? facility.type === selectedType : true
-    
-    let matchesFilter = true
-    if (activeFilter === "24h") {
-      matchesFilter = facility.status === "24h"
-    } else if (activeFilter === "baratas") {
-      matchesFilter = facility.type === "farmacia"
-    } else if (activeFilter === "avaliadas") {
-      matchesFilter = (facility.rating || 0) >= 4.5
-    }
+  // Handle unified search: decide if it's a facility match or a medicine match
+  const searchStr = searchQuery.toLowerCase().trim()
+  
+  // Find matched medicines from the database (simulated)
+  const matchedMedicines = searchStr 
+    ? mockMedicines.filter((med) => med.name.toLowerCase().includes(searchStr))
+    : []
 
-    return matchesSearch && matchesType && matchesFilter
-  }).sort((a, b) => {
-    if (activeFilter === "proximas") {
-      return parseFloat(a.distance || "0") - parseFloat(b.distance || "0")
+  const isLookingForMedicine = matchedMedicines.length > 0
+
+  type SearchResult = 
+    | { type: "facility"; facility: HealthFacility }
+    | { type: "medicineList"; facility: HealthFacility; medicine: typeof mockMedicines[0] }
+
+  let results: SearchResult[] = []
+
+  if (isLookingForMedicine) {
+    // Return the pharmacies that have the searched medicine
+    matchedMedicines.forEach(med => {
+      const facility = healthFacilities.find(f => f.id === med.pharmacyId)
+      if (!facility) return
+      
+      // Apply filters for facility holding the medicine
+      if (selectedType && facility.type !== selectedType) return
+      if (extraActiveFilters.includes("24h") && facility.status !== "24h") return
+      if (extraActiveFilters.includes("avaliadas") && (facility.rating || 0) < 4.5) return
+      
+      results.push({ type: "medicineList", facility, medicine: med })
+    })
+  } else {
+    // Normal facility search
+    let matchingFacilities = healthFacilities
+    if (searchStr) {
+      matchingFacilities = matchingFacilities.filter((facility) => 
+        facility.name.toLowerCase().includes(searchStr) ||
+        facility.address.toLowerCase().includes(searchStr)
+      )
     }
-    if (activeFilter === "avaliadas") {
-      return (b.rating || 0) - (a.rating || 0)
+    
+    matchingFacilities.forEach((facility) => {
+      if (selectedType && facility.type !== selectedType) return
+      if (extraActiveFilters.includes("24h") && facility.status !== "24h") return
+      if (extraActiveFilters.includes("baratas") && facility.type !== "farmacia") return
+      if (extraActiveFilters.includes("avaliadas") && (facility.rating || 0) < 4.5) return
+
+      results.push({ type: "facility", facility })
+    })
+  }
+
+  // Sort results according to active filter
+  results = results.sort((a, b) => {
+    if (extraActiveFilters.includes("baratas") && isLookingForMedicine) {
+      // Sort by medicine price if searching for medicine & "baratas" is active
+      const medA = a.type === "medicineList" ? a.medicine.price : 0
+      const medB = b.type === "medicineList" ? b.medicine.price : 0
+      return medA - medB
+    }
+    if (extraActiveFilters.includes("proximas")) {
+      const distA = parseFloat(a.facility.distance || "0")
+      const distB = parseFloat(b.facility.distance || "0")
+      return distA - distB
+    }
+    if (extraActiveFilters.includes("avaliadas")) {
+      return (b.facility.rating || 0) - (a.facility.rating || 0)
     }
     return 0
   })
@@ -160,7 +260,7 @@ export default function ExplorePage() {
     return (
       <div className="fixed inset-0 z-50 bg-background">
         <AngolaMap 
-          facilities={filteredFacilities} 
+          facilities={results.map(r => r.facility).filter((f, i, self) => i === self.findIndex(t => t.id === f.id))} 
           isFullscreen={true}
           onExitFullscreen={() => setIsMapFullscreen(false)}
         />
@@ -180,51 +280,30 @@ export default function ExplorePage() {
             </div>
             <Input
               type="text"
-              placeholder="Procurar farmacia, hospital..."
+              placeholder="Procurar farmácia, hospital ou medicamento..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-4 bg-muted border-none rounded-2xl text-sm"
             />
           </div>
           
-          {/* Type Filters */}
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {typeFilters.map((type) => {
-              const Icon = type.icon
-              return (
-                <button
-                  key={type.id ?? "all"}
-                  onClick={() => setSelectedType(type.id)}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                    selectedType === type.id
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
-                  }`}
-                >
-                  {Icon && <Icon className="w-3.5 h-3.5" />}
-                  {type.label}
-                </button>
-              )
-            })}
-          </div>
-
-          {/* Main Filters + More Button */}
+          {/* Type Filters + More Button */}
           <div className="flex gap-2 items-center">
             <div className="flex gap-2 overflow-x-auto flex-1 scrollbar-hide">
-              {mainFilters.map((filter) => {
-                const Icon = filter.icon
+              {typeFilters.map((type) => {
+                const Icon = type.icon
                 return (
                   <button
-                    key={filter.id}
-                    onClick={() => setActiveFilter(filter.id)}
-                    className={`px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                      activeFilter === filter.id
-                        ? "bg-secondary text-foreground border border-primary/20"
-                        : "bg-surface-container text-muted-foreground hover:bg-muted"
+                    key={type.id ?? "all"}
+                    onClick={() => setSelectedType(type.id)}
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                      selectedType === type.id
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5" />
-                    {filter.label}
+                    {Icon && <Icon className="w-3.5 h-3.5" />}
+                    {type.label}
                   </button>
                 )
               })}
@@ -252,7 +331,7 @@ export default function ExplorePage() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>Filtros Adicionais</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {extraFilters.map((filter) => (
+                {allExtraFilters.map((filter) => (
                   <DropdownMenuCheckboxItem
                     key={filter.id}
                     checked={extraActiveFilters.includes(filter.id)}
@@ -281,7 +360,7 @@ export default function ExplorePage() {
           {extraActiveFilters.length > 0 && (
             <div className="flex gap-2 flex-wrap">
               {extraActiveFilters.map((filterId) => {
-                const filter = extraFilters.find(f => f.id === filterId)
+                const filter = allExtraFilters.find(f => f.id === filterId)
                 return (
                   <span 
                     key={filterId}
@@ -303,10 +382,11 @@ export default function ExplorePage() {
         </div>
 
         {/* Facilities Feed */}
+          {/* Unified Search Results Feed */}
         <div className="flex-1 overflow-y-auto px-4 md:px-6 space-y-3 pb-24">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-              Proximas de si ({filteredFacilities.length})
+              {isLookingForMedicine ? "Farmácias com o medicamento" : "Próximas de si"} ({results.length})
             </h2>
             {/* Mobile map toggle */}
             <Button
@@ -320,13 +400,44 @@ export default function ExplorePage() {
             </Button>
           </div>
           
-          {filteredFacilities.map((facility) => (
-            <HealthFacilityCard key={facility.id} facility={facility} />
-          ))}
+          {results.map((result, idx) => {
+            if (result.type === "facility") {
+              return <HealthFacilityCard key={`facility-${result.facility.id}-${idx}`} facility={result.facility} />
+            }
 
-          {filteredFacilities.length === 0 && (
+            // Render medicine matched inside pharmacy context
+            return (
+              <div key={`med-${result.medicine.id}-${idx}`} className="relative bg-card rounded-2xl shadow-sm border border-border/5 group overflow-hidden">
+                <HealthFacilityCard facility={result.facility} className="shadow-none rounded-none border-b border-border/10 pb-4 mb-0" />
+                <div className="px-5 py-3 bg-muted/30">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={result.medicine.image} 
+                        alt={result.medicine.name} 
+                        className="w-8 h-8 object-cover rounded-lg mix-blend-multiply opacity-80" 
+                      />
+                      <div>
+                        <p className="font-bold text-sm text-foreground">{result.medicine.name}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {result.medicine.inStock ? "Produto em Estoque" : "Esgotado"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="block font-black text-primary text-sm">
+                        {result.medicine.price.toLocaleString()} <span className="text-[10px] font-medium">Kz</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+
+          {results.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
-              <p>Nenhuma instituicao encontrada</p>
+              <p>Nenhuma correspondência encontrada</p>
             </div>
           )}
         </div>
@@ -335,7 +446,7 @@ export default function ExplorePage() {
       {/* Map Section - Hidden on mobile, shown in fullscreen mode */}
       <div className="hidden md:flex flex-1 relative">
         <AngolaMap 
-          facilities={filteredFacilities} 
+          facilities={results.map(r => r.facility).filter((f, i, self) => i === self.findIndex(t => t.id === f.id))} 
           onEnterFullscreen={() => setIsMapFullscreen(true)}
         />
       </div>
