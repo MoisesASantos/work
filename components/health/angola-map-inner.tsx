@@ -27,10 +27,9 @@ const createIcon = (colorClass: string, IconComponent: any) => {
 
 // Map styles
 const MAP_STYLES = {
-  // CartoDB Voyager é uma alternativa excelente e muito permissiva para mapas de ruas
-  streets: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-  // Google Satellite (para uso em desenvolvimento, geralmente não bloqueia referers)
-  satellite: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+  // Usa proxy interno para evitar bloqueios de políticas cross-origin no browser
+  streets: "/api/map-tiles/osm/{z}/{x}/{y}.png",
+  satellite: "/api/map-tiles/esri/{z}/{x}/{y}.png"
 }
 
 // Posições reais em Luanda
@@ -132,13 +131,28 @@ function CustomControls({
   )
 }
 
+function MapResizeHandler({ isFullscreen }: { isFullscreen: boolean }) {
+  const map = useMap()
+
+  useEffect(() => {
+    // Leaflet can render a blank canvas after layout jumps (e.g. fullscreen mount).
+    const timer = window.setTimeout(() => {
+      map.invalidateSize()
+    }, 120)
+
+    return () => window.clearTimeout(timer)
+  }, [map, isFullscreen])
+
+  return null
+}
+
 export default function AngolaMapInner({ facilities = [], isFullscreen = false, onExitFullscreen, onEnterFullscreen }: AngolaMapProps) {
   const [mapStyle, setMapStyle] = useState<"streets" | "satellite">("streets")
   
   // Custom icons are made with divIcon natively in render below
 
   return (
-    <section className={`flex-1 relative z-0 ${isFullscreen ? "fixed inset-0 z-50" : "h-full min-h-[400px]"}`}>
+    <section className={`flex-1 relative z-0 ${isFullscreen ? "fixed inset-0 z-[90]" : "h-full min-h-[400px]"}`}>
       {isFullscreen && (
         <button
           onClick={onExitFullscreen}
@@ -160,9 +174,11 @@ export default function AngolaMapInner({ facilities = [], isFullscreen = false, 
         zoom={13} 
         zoomControl={false}
         className="w-full h-full"
+        style={{ width: "100%", height: "100%" }}
       >
+        <MapResizeHandler isFullscreen={isFullscreen} />
         <TileLayer
-          attribution='&copy; <a href="https://carto.com/">Carto</a> | &copy; Map data'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url={MAP_STYLES[mapStyle]}
           maxZoom={19}
         />

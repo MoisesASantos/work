@@ -1,13 +1,17 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { User, MapPin, Phone, Mail, Shield, Bell, LogOut, ChevronRight, Edit2, Check, X, Camera } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import Image from "next/image"
 
+const AUTH_KEY = "apothecary_auth"
+
 export default function PerfilPage() {
+  const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
   const [profile, setProfile] = useState({
     name: "João Silva",
@@ -33,6 +37,11 @@ export default function PerfilPage() {
   const handleCancel = () => {
     setTempProfile(profile)
     setIsEditing(false)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem(AUTH_KEY)
+    router.push("/login")
   }
 
   return (
@@ -231,7 +240,11 @@ export default function PerfilPage() {
       </div>
 
       {/* Logout Button */}
-      <Button variant="outline" className="w-full rounded-2xl py-6 text-destructive border-destructive/30 hover:bg-destructive/10 hover:border-destructive font-bold text-base shadow-sm">
+      <Button
+        variant="outline"
+        className="w-full rounded-2xl py-6 text-destructive border-destructive/30 hover:bg-destructive/10 hover:border-destructive font-bold text-base shadow-sm"
+        onClick={handleLogout}
+      >
         <LogOut className="w-5 h-5 mr-3" />
         Terminar Sessão
       </Button>

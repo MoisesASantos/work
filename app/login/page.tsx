@@ -6,12 +6,15 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Pill, ArrowLeft, Mail, Lock, Eye, EyeOff, Phone } from "lucide-react"
 
+const AUTH_KEY = "apothecary_auth"
+
 export default function LoginPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
   const initialTab = searchParams.get('tab') === 'register' ? 'register' : 'login'
   const redirectUrl = searchParams.get('redirect') || '/pesquisa'
+  const safeRedirectUrl = redirectUrl.startsWith('/') ? redirectUrl : '/pesquisa'
   
   const [activeTab, setActiveTab] = useState<'login' | 'register'>(initialTab)
   const [showPassword, setShowPassword] = useState(false)
@@ -21,11 +24,14 @@ export default function LoginPage() {
     setActiveTab(searchParams.get('tab') === 'register' ? 'register' : 'login')
   }, [searchParams])
 
+  const authenticateAndRedirect = () => {
+    localStorage.setItem(AUTH_KEY, "true")
+    router.push(safeRedirectUrl)
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Upon successful login/registration, redirect the user
-    // to their intended destination (Explorer/Pesquisa or Receitas)
-    router.push(redirectUrl)
+    authenticateAndRedirect()
   }
 
   return (
@@ -252,7 +258,10 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-8 space-y-3">
-            <button className="relative w-full flex items-center justify-center gap-3 bg-card border border-border/70 hover:border-border hover:bg-muted py-3.5 rounded-xl font-bold text-foreground transition-all hover:shadow-sm">
+            <button
+              onClick={authenticateAndRedirect}
+              className="relative w-full flex items-center justify-center gap-3 bg-card border border-border/70 hover:border-border hover:bg-muted py-3.5 rounded-xl font-bold text-foreground transition-all hover:shadow-sm"
+            >
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
               Conta Google
             </button>

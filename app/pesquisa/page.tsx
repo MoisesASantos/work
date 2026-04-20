@@ -258,7 +258,7 @@ export default function ExplorePage() {
   // Fullscreen map view
   if (isMapFullscreen) {
     return (
-      <div className="fixed inset-0 z-50 bg-background">
+      <div className="fixed inset-0 z-[80] bg-background">
         <AngolaMap 
           facilities={results.map(r => r.facility).filter((f, i, self) => i === self.findIndex(t => t.id === f.id))} 
           isFullscreen={true}
