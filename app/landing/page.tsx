@@ -49,9 +49,9 @@ const StaggerItem = ({ children, animation = "fadeIn" }: any) => {
   return <motion.div variants={variants[animation]} className="h-full">{children}</motion.div>
 }
 
-const SectionWrapper = ({ children, orbs, orbTheme, className = "" }: any) => {
+const SectionWrapper = ({ children, orbs, orbTheme, className = "", ...props }: any) => {
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative scroll-mt-24 ${className}`} {...props}>
       {orbs && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center">
           {orbTheme === 'primary' && <div className="absolute w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px]" />}
@@ -143,9 +143,42 @@ export default function LandingPage() {
       <PrescriptionUploadModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* ════════════════════════════════════════
+          NAVBAR
+         ════════════════════════════════════════ */}
+      <motion.nav 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 inset-x-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50"
+      >
+        <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+          <Link href="/landing" className="flex items-center gap-2 text-xl font-bold font-serif text-primary">
+            <Pill className="w-6 h-6" />
+            Apothecary
+          </Link>
+          
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+            <Link href="#inicio" className="hover:text-primary transition-colors">Início</Link>
+            <Link href="#como-funciona" className="hover:text-primary transition-colors">Como Funciona</Link>
+            <Link href="#rede" className="hover:text-primary transition-colors">Rede</Link>
+            <Link href="#contactos" className="hover:text-primary transition-colors">Contactos</Link>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-sm font-bold hover:text-primary transition-colors hidden sm:block">
+              Entrar
+            </Link>
+            <Link href="/login?tab=register" className="bg-primary text-primary-foreground px-5 py-2.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all inline-block">
+              Registar
+            </Link>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* ════════════════════════════════════════
           HERO SECTION — Parallax
          ════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative w-full overflow-hidden pt-20 pb-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center bg-background">
+      <section id="inicio" ref={heroRef} className="relative w-full overflow-hidden pt-32 pb-24 lg:min-h-screen lg:flex lg:flex-col lg:justify-center bg-background">
         {/* Video Background */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-[0.04]">
@@ -169,7 +202,7 @@ export default function LandingPage() {
 
         {/* Hero Content */}
         <motion.div style={{ y: heroContentY }} className="max-w-[1400px] mx-auto px-6 relative z-10 w-full py-12 lg:py-0">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center lg:h-[85vh]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             
             {/* LEFT CONTENT */}
             <motion.div
@@ -177,13 +210,6 @@ export default function LandingPage() {
               variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
               className="flex flex-col justify-center space-y-8 pt-4 lg:pt-0"
             >
-              <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
-                className="inline-flex items-center gap-3 bg-primary/5 border border-primary/20 px-4 py-2 w-fit rounded-full"
-              >
-                <span className="w-2 h-2 bg-primary rounded-full animate-ping" />
-                <span className="text-primary text-xs font-bold uppercase tracking-widest">✓ Entrega em 24h • Luanda</span>
-              </motion.div>
-
               <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
                 className="space-y-4"
               >
@@ -218,28 +244,16 @@ export default function LandingPage() {
                   >
                     {isListening ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
                   </button>
-                  <Link href="/pesquisa" className="bg-primary text-primary-foreground px-6 py-3 rounded-xl text-sm font-bold hover:opacity-90 flex items-center justify-center whitespace-nowrap">
+                  <Link href="/login?redirect=/pesquisa" className="bg-primary text-primary-foreground px-6 py-3 rounded-xl text-sm font-bold hover:opacity-90 flex items-center justify-center whitespace-nowrap">
                     Procurar
                   </Link>
                 </div>
 
                 <div className="flex gap-3">
-                  <button onClick={() => setIsModalOpen(true)} className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 hover:bg-muted text-foreground px-5 py-3 rounded-xl text-sm font-bold transition-all shadow-sm w-fit">
+                  <Link href="/login?redirect=/receitas" className="inline-flex items-center gap-2 bg-muted/50 border border-border/50 hover:bg-muted text-foreground px-5 py-3 rounded-xl text-sm font-bold transition-all shadow-sm w-fit">
                     <FileText className="w-4 h-4 text-primary" /> Submeter Receita
-                  </button>
+                  </Link>
                 </div>
-              </motion.div>
-
-              {/* Mini Stats */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-                className="grid grid-cols-3 gap-4 pt-8 border-t border-border/50"
-              >
-                {[ { v: "200+", l: "Unidades" }, { v: "5k+", l: "Medicamentos" }, { v: "98%", l: "Satisfação" } ].map((s, i) => (
-                  <div key={i} className="group">
-                    <p className="text-3xl lg:text-4xl font-black text-foreground group-hover:text-primary transition-colors">{s.v}</p>
-                    <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mt-1">{s.l}</p>
-                  </div>
-                ))}
               </motion.div>
             </motion.div>
 
@@ -280,9 +294,9 @@ export default function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════
-          PILARES DO ATENDIMENTO
+          PILARES DO ATENDIMENTO / COMO FUNCIONA
          ════════════════════════════════════════ */}
-      <SectionWrapper orbs orbTheme="secondary" className="bg-slate-900 overflow-hidden pt-24 pb-32">
+      <SectionWrapper orbs orbTheme="secondary" className="bg-slate-900 overflow-hidden pt-24 pb-32" id="como-funciona">
         <section className="px-6 max-w-7xl mx-auto">
           <RevealOnScroll animation="slideUp">
             <div className="mb-16 text-center">
@@ -411,7 +425,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════
           TRUST
          ════════════════════════════════════════ */}
-      <SectionWrapper orbs orbTheme="secondary" className="bg-slate-900 pt-20 pb-20">
+      <SectionWrapper orbs orbTheme="secondary" className="bg-slate-900 pt-20 pb-20" id="rede">
         <section className="px-6 text-white max-w-7xl mx-auto">
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8" staggerDelay={0.14}>
             {[
@@ -500,7 +514,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════════
           FOOTER
          ════════════════════════════════════════ */}
-      <SectionWrapper className="bg-slate-950 text-white">
+      <SectionWrapper className="bg-slate-950 text-white" id="contactos">
         <RevealOnScroll animation="fadeIn" duration={0.8}>
           <footer className="py-16 px-6">
             <div className="max-w-7xl mx-auto">

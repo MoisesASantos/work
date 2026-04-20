@@ -8,9 +8,9 @@ import { EmergencyButton } from "@/components/layout/emergency-button"
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isLanding = pathname === "/landing"
+  const isIsolated = pathname === "/landing" || pathname === "/login"
 
-  if (isLanding) {
+  if (isIsolated) {
     return <main className="min-h-screen bg-background">{children}</main>
   }
 
