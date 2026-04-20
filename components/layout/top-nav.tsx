@@ -79,9 +79,9 @@ export function TopNav() {
         </Sheet>
         
         {/* Logo - Mobile only */}
-        <span className="text-xl font-bold tracking-tight text-primary font-serif">
+        <Link href="/landing" className="text-xl font-bold tracking-tight text-primary font-serif">
           Apothecary
-        </span>
+        </Link>
       </div>
 
       {/* Location - Desktop */}

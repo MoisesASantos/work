@@ -26,7 +26,7 @@ export function SidebarContent() {
 
   return (
     <>
-      <div className="flex items-center gap-3 mb-10 px-2 pt-2">
+      <Link href="/landing" className="flex items-center gap-3 mb-10 px-2 pt-2 hover:opacity-80 transition-opacity">
         <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground">
           <Pill className="w-5 h-5" />
         </div>
@@ -38,7 +38,7 @@ export function SidebarContent() {
             Luanda, AO
           </p>
         </div>
-      </div>
+      </Link>
 
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {

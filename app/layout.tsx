@@ -2,10 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Manrope } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { Sidebar } from '@/components/layout/sidebar'
-import { TopNav } from '@/components/layout/top-nav'
-import { BottomNav } from '@/components/layout/bottom-nav'
-import { EmergencyButton } from '@/components/layout/emergency-button'
+import { Shell } from '@/components/layout/shell'
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -55,13 +52,9 @@ export default function RootLayout({
   return (
     <html lang="pt-AO" className={`${inter.variable} ${manrope.variable}`}>
       <body className="font-sans antialiased bg-background text-foreground">
-        <Sidebar />
-        <TopNav />
-        <main className="md:ml-64 pt-16 pb-24 md:pb-8 min-h-screen">
+        <Shell>
           {children}
-        </main>
-        <BottomNav />
-        <EmergencyButton />
+        </Shell>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
